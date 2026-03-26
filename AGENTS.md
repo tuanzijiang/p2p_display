@@ -36,3 +36,10 @@ Main areas in the repository:
 
 - `src/`: frontend application code
 - `knowledge/`: AI-reference knowledge documents
+
+## Active Technologies
+- TypeScript 5.x, React 19.x + Vite 5, React 19, React Router 6, Zustand 5, `@tanstack/react-virtual` for large-list rendering, browser File API, Pencil design at `specs/001-p2p-log-viewer/log_viewer.pen` (001-p2p-log-viewer)
+- N/A; all file contents and derived viewer state remain in browser memory for the active session (001-p2p-log-viewer)
+
+## Recent Changes
+- 001-p2p-log-viewer: Added TypeScript 5.x, React 19.x + Vite 5, React 19, React Router 6, Zustand 5, `@tanstack/react-virtual` for large-list rendering, browser File API, Pencil design at `specs/001-p2p-log-viewer/log_viewer.pen`

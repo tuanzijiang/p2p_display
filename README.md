@@ -37,6 +37,40 @@ npm run dev
 npm run build
 ```
 
+运行自动化验证：
+
+```bash
+npm run test
+npm run test:e2e
+```
+
+## 本地 P2P 日志查看器
+
+当前主界面已经替换为本地 P2P 日志查看器，包含以下能力：
+
+- 顶部标题栏显示上传入口，解析成功后显示日志绝对路径
+- 时间轴区域支持精确时间选择，并将文本列表定位到对应时间点之后的首条记录
+- 右侧拖拽上传区与顶部上传共用同一解析流程
+- 底部内容区域支持文本面板和拓扑占位面板切换
+- 文本面板对大结果集启用虚拟滚动，小结果集直接渲染以保证交互稳定
+
+解析规则当前聚焦仓库知识库中定义的两个核心字段：
+
+- 时间戳
+- `_msg` 核心消息
+
+常见开发入口：
+
+```bash
+npm run dev
+```
+
+测试覆盖包含：
+
+- `tests/unit/log-parser/parseLogFile.test.ts`
+- `tests/integration/log-viewer/*.test.tsx`
+- `tests/e2e/log-viewer/*.spec.ts`
+
 ## 通过 Spec Kit 开发
 
 本仓库支持按照 Spec-Driven Development 的方式推进功能开发，即先明确原则和需求，再生成计划、任务，并据此实施。
@@ -113,7 +147,7 @@ $speckit-specify 为 P2P 日志增加结构化解析视图，支持从原始日�
 在计划阶段补充当前仓库技术背景和实现边界：
 
 ```text
-$speckit-plan 使用 Vite 5、React 19、TypeScript 5、React Router 6 和 Zustand 5 实现。知识文档放在 knowledge/，日志样例参考 tmp.log，优先保持前端结构清晰、类型明确、便于后续扩展多类日志解析规则。
+$speckit-plan 使用 Vite 5、React 19、TypeScript 5、React Router 6 和 Zustand 5 实现。知识文档放在 knowledge/，日志样例参考, 优先保持前端结构清晰、类型明确、便于后续扩展多类日志解析规则。
 ```
 
 ### 7. 拆解任务
