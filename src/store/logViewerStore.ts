@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { parseLogFile } from '@/features/log-parser/parseLogFile';
-import type { ParsedLogRecord } from '@/features/log-parser/types';
+import type { ParseStageTiming, ParsedLogRecord } from '@/features/log-parser/types';
 import type { ActivePanel, ViewerState } from '@/features/log-viewer/types';
 import { findAnchorRecord } from '@/features/log-viewer/findAnchorRecord';
 import { clampTimelineValue } from '@/features/log-viewer/timeRange';
@@ -14,6 +14,7 @@ type LogViewerActions = {
 };
 
 type LogViewerStore = ViewerState & LogViewerActions;
+const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
 
 const INITIAL_STATE: ViewerState = {
   sourcePath: null,
@@ -58,6 +59,16 @@ function collapseOtherRows(records: ParsedLogRecord[], recordId: string) {
   }));
 }
 
+function withReadStage(stageTimings: ParseStageTiming[], durationMs: number) {
+  const readStage = {
+    key: 'read-file',
+    label: '读取文件内容',
+    durationMs: Math.round(durationMs * 1000) / 1000,
+  };
+
+  return [readStage, ...stageTimings];
+}
+
 export const useLogViewerStore = create<LogViewerStore>((set, get) => ({
   ...INITIAL_STATE,
   resetViewer: () => set(INITIAL_STATE),
@@ -70,14 +81,22 @@ export const useLogViewerStore = create<LogViewerStore>((set, get) => ({
     });
 
     try {
+      const readStartedAt = now();
       const content = await readFileContent(file);
+      const readDurationMs = now() - readStartedAt;
       const result = parseLogFile(content);
+      const stageTimings = withReadStage(result.parseSummary.stageTimings, readDurationMs);
+      const parseSummary = {
+        ...result.parseSummary,
+        stageTimings,
+        totalDurationMs: Math.round(stageTimings.reduce((total, stage) => total + stage.durationMs, 0) * 1000) / 1000,
+      };
 
       if (!result.timelineRange || result.records.length === 0) {
         set({
           ...INITIAL_STATE,
           loadStatus: 'error',
-          parseSummary: result.parseSummary,
+          parseSummary,
         });
         return;
       }
@@ -88,7 +107,7 @@ export const useLogViewerStore = create<LogViewerStore>((set, get) => ({
         fileSizeBytes: file.size,
         loadStatus: 'ready',
         records: result.records,
-        parseSummary: result.parseSummary,
+        parseSummary,
         timelineRange: result.timelineRange,
         selectedTimestampMs: result.timelineRange.startMs,
         anchorRecordIndex: 0,
@@ -104,6 +123,8 @@ export const useLogViewerStore = create<LogViewerStore>((set, get) => ({
           invalidLineCount: 0,
           status: 'failed',
           message: '文件读取失败，请重试。',
+          stageTimings: [],
+          totalDurationMs: 0,
         },
       });
     }

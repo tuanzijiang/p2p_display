@@ -15,6 +15,12 @@ describe('parseLogFile', () => {
     expect(result.parseSummary.status).toBe('complete');
     expect(result.timelineRange?.startLabel).toBe('2026-03-26 14:29:54.055+08:00');
     expect(result.records[0].message).toContain('[P2P]StartMatch');
+    expect(result.parseSummary.stageTimings.map((stage) => stage.key)).toEqual([
+      'split-lines',
+      'extract-records',
+      'build-summary',
+    ]);
+    expect(result.parseSummary.totalDurationMs).toBeGreaterThanOrEqual(0);
   });
 
   it('reports partial success when some lines are malformed', () => {

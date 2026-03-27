@@ -29,20 +29,37 @@ export function ParseStatusBanner({ loadStatus, parseSummary }: ParseStatusBanne
     <section className={`parse-status parse-status--${tone}`} role="status">
       <p>{message}</p>
       {parseSummary ? (
-        <dl className="parse-status__stats">
-          <div>
-            <dt>总行数</dt>
-            <dd>{parseSummary.totalLines}</dd>
-          </div>
-          <div>
-            <dt>有效记录</dt>
-            <dd>{parseSummary.validRecordCount}</dd>
-          </div>
-          <div>
-            <dt>跳过行数</dt>
-            <dd>{parseSummary.invalidLineCount}</dd>
-          </div>
-        </dl>
+        <>
+          <dl className="parse-status__stats">
+            <div>
+              <dt>总行数</dt>
+              <dd>{parseSummary.totalLines}</dd>
+            </div>
+            <div>
+              <dt>有效记录</dt>
+              <dd>{parseSummary.validRecordCount}</dd>
+            </div>
+            <div>
+              <dt>跳过行数</dt>
+              <dd>{parseSummary.invalidLineCount}</dd>
+            </div>
+            <div>
+              <dt>总耗时</dt>
+              <dd>{parseSummary.totalDurationMs} ms</dd>
+            </div>
+          </dl>
+
+          {loadStatus !== 'loading' && parseSummary.stageTimings.length > 0 ? (
+            <dl className="parse-status__timings">
+              {parseSummary.stageTimings.map((stage) => (
+                <div key={stage.key}>
+                  <dt>{stage.label}</dt>
+                  <dd>{stage.durationMs} ms</dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
+        </>
       ) : null}
     </section>
   );
