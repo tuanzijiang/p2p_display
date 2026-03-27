@@ -28,30 +28,24 @@ export function HeaderBar({ sourcePath, isLoading, onFileSelected }: HeaderBarPr
   return (
     <header className="viewer-header">
       <div className="viewer-header__title">
-        <p className="viewer-header__eyebrow">P2P Local Viewer</p>
-        <h1>本地 P2P 日志查看器</h1>
+        <p className="viewer-header__file-state" title={sourcePath ?? undefined}>
+          <span className="viewer-header__file-label">当前日志文件：</span>
+          <span className="viewer-header__file-path">{sourcePath ?? '未选择文件'}</span>
+        </p>
       </div>
 
-      <div className="viewer-header__path">
-        {sourcePath ? (
-          <p className="viewer-header__path-value" title={sourcePath}>
-            {sourcePath}
-          </p>
-        ) : (
-          <>
-            <input
-              id={inputId}
-              ref={inputRef}
-              className="sr-only"
-              data-testid="header-file-input"
-              type="file"
-              onChange={handleChange}
-            />
-            <button className="viewer-header__upload" type="button" onClick={openPicker} disabled={isLoading}>
-              {isLoading ? '解析中...' : '上传日志文件'}
-            </button>
-          </>
-        )}
+      <div className="viewer-header__actions">
+        <input
+          id={inputId}
+          ref={inputRef}
+          className="sr-only"
+          data-testid="header-file-input"
+          type="file"
+          onChange={handleChange}
+        />
+        <button className="viewer-header__upload" type="button" onClick={openPicker} disabled={isLoading}>
+          {isLoading ? '解析中...' : '上传日志文件'}
+        </button>
       </div>
     </header>
   );

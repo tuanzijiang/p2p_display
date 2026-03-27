@@ -8,9 +8,8 @@ export function TopologyPlaceholder() {
         <span />
       </div>
       <div className="topology-placeholder__body">
-        <p className="section-label">Topology</p>
         <h2>拓扑分析能力尚未开放</h2>
-        <p>当前版本先提供可选入口与完整占位布局，后续会在此处补充节点关系、链路分组与异常拓扑视图。</p>
+        <p>当前版本保留与设计稿一致的拓扑面板入口，后续会在这里补充节点关系、链路分组和异常链路视图。</p>
       </div>
     </section>
   );

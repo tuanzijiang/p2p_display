@@ -11,6 +11,9 @@ export function TextLogRow({ record, onToggle }: TextLogRowProps) {
       <button className="text-log-row__button" type="button" onClick={() => onToggle(record.id)}>
         <time className="text-log-row__time">{record.timestampText}</time>
         <span className="text-log-row__message">{record.message}</span>
+        <span className="text-log-row__chevron" aria-hidden="true">
+          {record.isExpanded ? '⌄' : '›'}
+        </span>
       </button>
       {record.isExpanded ? <pre className="text-log-row__raw">{record.rawLine}</pre> : null}
     </article>

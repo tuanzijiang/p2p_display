@@ -26,9 +26,8 @@ export function TextLogPanel({ records, anchorRecordIndex, onToggleRecord }: Tex
   return (
     <section className="text-log-panel">
       <div className="text-log-panel__summary">
-        <p className="section-label">日志正文</p>
-        <h2>从所选时间点开始连续浏览文本记录</h2>
-        <span>{visibleRecords.length} 条可见记录</span>
+        <h2>日志文本流</h2>
+        <span>共 {visibleRecords.length.toLocaleString()} 条</span>
       </div>
 
       <div
