@@ -16,10 +16,12 @@ export function LogViewerPage() {
   const timelineRange = useLogViewerStore((state) => state.timelineRange);
   const selectedTimestampMs = useLogViewerStore((state) => state.selectedTimestampMs);
   const activePanel = useLogViewerStore((state) => state.activePanel);
+  const panelScrollTops = useLogViewerStore((state) => state.panelScrollTops);
   const records = useLogViewerStore((state) => state.records);
   const anchorRecordIndex = useLogViewerStore((state) => state.anchorRecordIndex);
   const loadFile = useLogViewerStore((state) => state.loadFile);
   const setActivePanel = useLogViewerStore((state) => state.setActivePanel);
+  const setPanelScrollTop = useLogViewerStore((state) => state.setPanelScrollTop);
   const setSelectedTimestamp = useLogViewerStore((state) => state.setSelectedTimestamp);
   const toggleRecordExpanded = useLogViewerStore((state) => state.toggleRecordExpanded);
 
@@ -52,11 +54,16 @@ export function LogViewerPage() {
         ) : loadStatus !== 'ready' ? (
           <EmptyState />
         ) : activePanel === 'topology' ? (
-          <TopologyPlaceholder />
+          <TopologyPlaceholder
+            scrollTop={panelScrollTops.topology}
+            onScrollTopChange={(scrollTop) => setPanelScrollTop('topology', scrollTop)}
+          />
         ) : (
           <TextLogPanel
             anchorRecordIndex={anchorRecordIndex}
             records={records}
+            scrollTop={panelScrollTops.text}
+            onScrollTopChange={(scrollTop) => setPanelScrollTop('text', scrollTop)}
             onToggleRecord={toggleRecordExpanded}
           />
         )}

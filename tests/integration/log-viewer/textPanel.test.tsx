@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { LogViewerPage } from '@/routes/LogViewerPage';
@@ -32,5 +32,24 @@ describe('text panel states', () => {
     await user.click(screen.getByText('[P2P]StartMatch'));
 
     expect(screen.getByText(VALID_LOG_LINES[0])).toBeInTheDocument();
+  });
+
+  it('restores the text panel scroll position after switching panels', async () => {
+    const user = userEvent.setup();
+    render(<LogViewerPage />);
+
+    await user.upload(
+      screen.getByTestId('header-file-input'),
+      makeFile(VALID_LOG_TEXT, 'panel.log', 'text/plain', '/Users/demo/panel.log'),
+    );
+
+    const textPanel = await screen.findByTestId('text-log-panel');
+    textPanel.scrollTop = 180;
+    fireEvent.scroll(textPanel);
+
+    await user.click(screen.getByRole('tab', { name: '拓扑面板' }));
+    await user.click(screen.getByRole('tab', { name: '文本面板' }));
+
+    expect(await screen.findByTestId('text-log-panel')).toHaveProperty('scrollTop', 180);
   });
 });

@@ -9,6 +9,7 @@ type LogViewerActions = {
   resetViewer: () => void;
   loadFile: (file: File) => Promise<void>;
   setActivePanel: (panel: ActivePanel) => void;
+  setPanelScrollTop: (panel: ActivePanel, scrollTop: number) => void;
   setSelectedTimestamp: (timestampMs: number) => void;
   toggleRecordExpanded: (recordId: string) => void;
 };
@@ -27,6 +28,10 @@ const INITIAL_STATE: ViewerState = {
   selectedTimestampMs: null,
   anchorRecordIndex: 0,
   activePanel: 'text',
+  panelScrollTops: {
+    text: 0,
+    topology: 0,
+  },
 };
 
 async function readFileContent(file: File) {
@@ -132,6 +137,14 @@ export const useLogViewerStore = create<LogViewerStore>((set, get) => ({
   setActivePanel(panel) {
     set({ activePanel: panel });
   },
+  setPanelScrollTop(panel, scrollTop) {
+    set((state) => ({
+      panelScrollTops: {
+        ...state.panelScrollTops,
+        [panel]: Math.max(0, scrollTop),
+      },
+    }));
+  },
   setSelectedTimestamp(timestampMs) {
     const { timelineRange, records } = get();
 
@@ -145,6 +158,10 @@ export const useLogViewerStore = create<LogViewerStore>((set, get) => ({
     set({
       selectedTimestampMs: nextTimestamp,
       anchorRecordIndex,
+      panelScrollTops: {
+        ...get().panelScrollTops,
+        text: 0,
+      },
     });
   },
   toggleRecordExpanded(recordId) {

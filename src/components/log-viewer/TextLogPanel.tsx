@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { ParsedLogRecord } from '@/features/log-parser/types';
 import { TextLogRow } from './TextLogRow';
@@ -6,10 +6,18 @@ import { TextLogRow } from './TextLogRow';
 type TextLogPanelProps = {
   records: ParsedLogRecord[];
   anchorRecordIndex: number;
+  scrollTop: number;
+  onScrollTopChange: (scrollTop: number) => void;
   onToggleRecord: (recordId: string) => void;
 };
 
-export function TextLogPanel({ records, anchorRecordIndex, onToggleRecord }: TextLogPanelProps) {
+export function TextLogPanel({
+  records,
+  anchorRecordIndex,
+  scrollTop,
+  onScrollTopChange,
+  onToggleRecord,
+}: TextLogPanelProps) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const startIndex = Math.min(anchorRecordIndex, records.length);
   const visibleRecords = useMemo(() => records.slice(startIndex), [records, startIndex]);
@@ -21,7 +29,20 @@ export function TextLogPanel({ records, anchorRecordIndex, onToggleRecord }: Tex
     getScrollElement: () => parentRef.current,
     overscan: 8,
     getItemKey: (index) => visibleRecords[index]?.id ?? index,
+    initialOffset: scrollTop,
   });
+
+  useLayoutEffect(() => {
+    if (!parentRef.current) {
+      return;
+    }
+
+    if (Math.abs(parentRef.current.scrollTop - scrollTop) <= 1) {
+      return;
+    }
+
+    parentRef.current.scrollTop = scrollTop;
+  }, [scrollTop, visibleRecords.length]);
 
   return (
     <section className="text-log-panel">
@@ -35,6 +56,7 @@ export function TextLogPanel({ records, anchorRecordIndex, onToggleRecord }: Tex
         className="text-log-panel__viewport"
         data-anchor-index={anchorRecordIndex}
         data-testid="text-log-panel"
+        onScroll={(event) => onScrollTopChange(event.currentTarget.scrollTop)}
       >
         {useVirtualizedList ? (
           <div

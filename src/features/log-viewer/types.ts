@@ -17,4 +17,5 @@ export type ViewerState = ViewerFileMeta & {
   selectedTimestampMs: number | null;
   anchorRecordIndex: number;
   activePanel: ActivePanel;
+  panelScrollTops: Record<ActivePanel, number>;
 };

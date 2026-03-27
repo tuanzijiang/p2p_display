@@ -22,10 +22,15 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
   background: linear-gradient(180deg, #f4f8ff 0%, #eef3ff 100%);
 }
 
@@ -36,10 +41,6 @@ a {
 
 button {
   font: inherit;
-}
-
-#root {
-  min-height: 100vh;
 }
 
 h1,

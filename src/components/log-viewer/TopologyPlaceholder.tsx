@@ -1,6 +1,32 @@
-export function TopologyPlaceholder() {
+import { useLayoutEffect, useRef } from 'react';
+
+type TopologyPlaceholderProps = {
+  scrollTop: number;
+  onScrollTopChange: (scrollTop: number) => void;
+};
+
+export function TopologyPlaceholder({ scrollTop, onScrollTopChange }: TopologyPlaceholderProps) {
+  const panelRef = useRef<HTMLElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (!panelRef.current) {
+      return;
+    }
+
+    if (Math.abs(panelRef.current.scrollTop - scrollTop) <= 1) {
+      return;
+    }
+
+    panelRef.current.scrollTop = scrollTop;
+  }, [scrollTop]);
+
   return (
-    <section className="topology-placeholder">
+    <section
+      ref={panelRef}
+      className="topology-placeholder"
+      data-testid="topology-panel"
+      onScroll={(event) => onScrollTopChange(event.currentTarget.scrollTop)}
+    >
       <div className="topology-placeholder__graphic" aria-hidden="true">
         <span />
         <span />
